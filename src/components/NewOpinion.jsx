@@ -1,10 +1,13 @@
-import { useActionState } from "react";
+import { useActionState, use } from "react";
+import { OpinionsContext } from "../store/opinions-context";
 
 export function NewOpinion() {
-  function shareOpinionAction(prevState, formData) {
+  const { addOpinion } = use(OpinionsContext);
+
+  async function shareOpinionAction(prevState, formData) {
     const userName = formData.get("userName");
     const title = formData.get("title");
-    const yourOpinion = formData.get("body");
+    const body = formData.get("body");
 
     let errors = [];
 
@@ -15,7 +18,7 @@ export function NewOpinion() {
       errors.push("Title must be atleast 5 characters.");
     }
 
-    if (yourOpinion.trim().length < 10 || yourOpinion.trim().length > 300) {
+    if (body.trim().length < 10 || body.trim().length > 300) {
       errors.push("Opinion must be between 10 to 300 characters ");
     }
 
@@ -29,6 +32,7 @@ export function NewOpinion() {
         },
       };
     }
+    await addOpinion({ userName, title, body });
     return { errors: null };
   }
 
@@ -67,7 +71,7 @@ export function NewOpinion() {
             id="body"
             name="body"
             rows={5}
-            defaultValue={formState.enteredValues?.yourOpinion}
+            defaultValue={formState.enteredValues?.body}
           ></textarea>
         </p>
 
